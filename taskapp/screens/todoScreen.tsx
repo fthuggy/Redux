@@ -1,3 +1,4 @@
+import { useState } from "react";
 import {
   View,
   Text,
@@ -6,14 +7,14 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
 import { addTodo, toggleTodo, removeTodo } from "@/features/todos/todoSlice";
-import { RootState } from "../store/store";
-import { useState } from "react";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 export default function TodoScreen() {
-  const dispatch = useDispatch();
-  const todos = useSelector((state: RootState) => state.todos.todos);
+  const dispatch = useAppDispatch();
+  const todos = useAppSelector((state) =>
+    state.todos.todos.filter((todo) => !todo.completed)
+  );
 
   const [text, setText] = useState("");
 
