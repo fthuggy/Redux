@@ -1,8 +1,8 @@
 import { Tabs } from "expo-router";
 import React from "react";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
 import { HapticTab } from "@/components/haptic-tab";
-import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
 import { useColorScheme } from "@/hooks/use-color-scheme";
 
@@ -20,9 +20,13 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          tabBarLabel: "Todo",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+          tabBarLabel: "Todos",
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              size={28}
+              name={focused ? "list" : "list-outline"}
+              color={color}
+            />
           ),
         }}
       />
@@ -31,8 +35,12 @@ export default function TabLayout() {
         name="completed"
         options={{
           tabBarLabel: "Completed",
-          tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+          tabBarIcon: ({ color, focused }) => (
+            <Ionicons
+              size={28}
+              name={focused ? "checkmark-circle" : "checkmark-circle-outline"}
+              color={color}
+            />
           ),
         }}
       />

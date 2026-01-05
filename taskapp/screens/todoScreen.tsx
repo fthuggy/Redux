@@ -1,15 +1,7 @@
 import { useState } from "react";
-import {
-  View,
-  Text,
-  TextInput,
-  FlatList,
-  Pressable,
-  StyleSheet,
-} from "react-native";
+import { View, Text, TextInput, FlatList, Pressable } from "react-native";
 import { addTodo, toggleTodo, removeTodo } from "@/features/todos/todoSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
-import type { RootState } from "../store/store";
 
 export default function TodoScreen() {
   const dispatch = useAppDispatch();
@@ -19,26 +11,23 @@ export default function TodoScreen() {
   const [text, setText] = useState("");
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.title}>My Todos</Text>
-        <Text style={styles.subtitle}>{todos.length} tasks</Text>
+    <View className="flex-1 bg-gray-100">
+      <View className="px-5 pt-7 pb-5 bg-white border-b border-gray-200">
+        <Text className="text-3xl font-bold text-gray-800 mb-1">My Todos</Text>
+        <Text className="text-sm text-gray-500">{todos.length} tasks</Text>
       </View>
 
-      <View style={styles.inputSection}>
+      <View className="flex-row px-5 py-4 bg-white gap-2.5">
         <TextInput
           placeholder="Write a new todo..."
           placeholderTextColor="#999"
           value={text}
           onChangeText={setText}
-          style={styles.input}
+          className="flex-1 border border-gray-300 rounded-lg px-3 py-2.5 text-base bg-gray-100"
         />
 
         <Pressable
-          style={({ pressed }) => [
-            styles.addButton,
-            pressed && { opacity: 0.7 },
-          ]}
+          className="bg-blue-500 px-5 py-2.5 rounded-lg justify-center active:opacity-70"
           onPress={() => {
             if (text.trim()) {
               dispatch(addTodo(text));
@@ -46,7 +35,7 @@ export default function TodoScreen() {
             }
           }}
         >
-          <Text style={styles.addButtonText}>Add</Text>
+          <Text className="text-white text-base font-semibold">Add</Text>
         </Pressable>
       </View>
 
@@ -54,144 +43,38 @@ export default function TodoScreen() {
         data={todos}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <View style={styles.todoItem}>
+          <View className="flex-row items-center justify-between bg-white rounded-lg mb-2 px-3 py-3 border border-gray-200">
             <Pressable
-              style={styles.todoContent}
+              className="flex-1 flex-row items-center gap-3"
               onPress={() => dispatch(toggleTodo(item.id))}
             >
               <View
-                style={[
-                  styles.checkbox,
-                  item.completed && styles.checkboxChecked,
-                ]}
+                className={`w-6 h-6 border-2 border-blue-500 rounded ${
+                  item.completed ? "bg-blue-500" : "bg-white"
+                }`}
               />
               <Text
-                style={[
-                  styles.todoText,
-                  item.completed && styles.todoTextCompleted,
-                ]}
+                className={`text-base flex-1 ${
+                  item.completed
+                    ? "line-through text-gray-500"
+                    : "text-gray-800"
+                }`}
               >
                 {item.text}
               </Text>
             </Pressable>
 
             <Pressable
-              style={styles.deleteButton}
+              className="px-2 py-1"
               onPress={() => dispatch(removeTodo(item.id))}
             >
-              <Text style={styles.deleteButtonText}>×</Text>
+              <Text className="text-3xl text-red-600 font-bold">×</Text>
             </Pressable>
           </View>
         )}
         scrollEnabled={true}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={{ paddingHorizontal: 20, paddingVertical: 12 }}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#f9f9f9",
-  },
-  header: {
-    paddingHorizontal: 20,
-    paddingTop: 30,
-    paddingBottom: 20,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    color: "#333",
-    marginBottom: 4,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#999",
-  },
-  inputSection: {
-    flexDirection: "row",
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-    backgroundColor: "#fff",
-    gap: 10,
-  },
-  input: {
-    flex: 1,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 16,
-    backgroundColor: "#f5f5f5",
-  },
-  addButton: {
-    backgroundColor: "#007AFF",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 8,
-    justifyContent: "center",
-  },
-  addButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-  },
-  todoItem: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    marginBottom: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  todoContent: {
-    flex: 1,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  checkbox: {
-    width: 24,
-    height: 24,
-    borderWidth: 2,
-    borderColor: "#007AFF",
-    borderRadius: 6,
-    backgroundColor: "#fff",
-  },
-  checkboxChecked: {
-    backgroundColor: "#007AFF",
-  },
-  todoText: {
-    fontSize: 16,
-    color: "#333",
-    flex: 1,
-  },
-  todoTextCompleted: {
-    textDecorationLine: "line-through",
-    color: "#999",
-  },
-  deleteButton: {
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-  },
-  deleteButtonText: {
-    fontSize: 28,
-    color: "#ff3b30",
-    fontWeight: "bold",
-    lineHeight: 28,
-  },
-});
