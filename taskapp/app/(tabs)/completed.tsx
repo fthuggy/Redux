@@ -2,9 +2,8 @@ import { View, Text, FlatList, StyleSheet } from "react-native";
 import { useAppSelector } from "@/store/hooks";
 
 export default function CompletedScreen() {
-  const completedTodos = useAppSelector((state) =>
-    state.todos.todos.filter((todo) => todo.completed)
-  );
+  const allTodos = useAppSelector((state) => state.todos.todos);
+  const completedTodos = allTodos.filter((todo) => todo.completed);
 
   return (
     <View style={styles.container}>

@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { addTodo, toggleTodo, removeTodo } from "@/features/todos/todoSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+import type { RootState } from "../store/store";
 
 export default function TodoScreen() {
   const dispatch = useAppDispatch();
-  const todos = useAppSelector((state) =>
-    state.todos.todos.filter((todo) => !todo.completed)
-  );
+  const allTodos = useAppSelector((state) => state.todos.todos);
+  const todos = allTodos.filter((todo) => !todo.completed);
 
   const [text, setText] = useState("");
 
