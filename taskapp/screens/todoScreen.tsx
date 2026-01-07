@@ -61,7 +61,7 @@ export default function TodoScreen() {
         ))}
       </View>
 
-      {filter !== "deleted" && (
+      {filter === "all" && (
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Write a new todo..."
@@ -137,6 +137,7 @@ export default function TodoScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     backgroundColor: "#f3f4f6",
   },
   header: {
