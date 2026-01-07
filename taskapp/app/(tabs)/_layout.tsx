@@ -21,6 +21,7 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarLabel: "Todos",
+          headerTitle: "",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={28}
@@ -35,6 +36,7 @@ export default function TabLayout() {
         name="completed"
         options={{
           tabBarLabel: "Completed",
+          headerTitle: "",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={28}
