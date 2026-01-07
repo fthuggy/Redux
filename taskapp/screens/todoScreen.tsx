@@ -7,8 +7,132 @@ import {
   Pressable,
   StyleSheet,
 } from "react-native";
-import { addTodo, toggleTodo, removeTodo } from "@/features/todos/todoSlice";
+import {
+  addTodo,
+  toggleTodo,
+  removeTodo,
+  restoreTodo,
+  selectTodosByFilter,
+} from "@/features/todos/todoSlice";
 import { useAppDispatch, useAppSelector } from "../store/hooks";
+
+export default function TodoScreen() {
+  const dispatch = useAppDispatch();
+
+  // 🟢 Lokal state för filter
+  const [filter, setFilter] = useState<"all" | "completed" | "deleted">("all");
+  const [text, setText] = useState("");
+
+  // 🟢 Hämtar filtrerade todos via selector
+  const todos = useAppSelector((state) => selectTodosByFilter(state, filter));
+
+  // Räkna aktiva todos (för header)
+  const activeCount = useAppSelector(
+    (state) =>
+      state.todos.todos.filter((t) => !t.completed && !t.deleted).length
+  );
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>My Todos</Text>
+        <Text style={styles.headerSubtitle}>{activeCount} tasks</Text>
+      </View>
+
+      <View style={styles.filterContainer}>
+        {(["all", "completed", "deleted"] as const).map((f) => (
+          <Pressable
+            key={f}
+            onPress={() => setFilter(f)}
+            style={[
+              styles.filterButton,
+              filter === f && styles.filterButtonActive,
+            ]}
+          >
+            <Text
+              style={[
+                styles.filterText,
+                filter === f && styles.filterTextActive,
+              ]}
+            >
+              {f.charAt(0).toUpperCase() + f.slice(1)}
+            </Text>
+          </Pressable>
+        ))}
+      </View>
+
+      {filter !== "deleted" && (
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Write a new todo..."
+            placeholderTextColor="#999"
+            value={text}
+            onChangeText={setText}
+            style={styles.input}
+          />
+          <Pressable
+            style={styles.addButton}
+            onPress={() => {
+              if (text.trim()) {
+                dispatch(addTodo(text));
+                setText("");
+              }
+            }}
+          >
+            <Text style={styles.addButtonText}>Add</Text>
+          </Pressable>
+        </View>
+      )}
+
+      <FlatList
+        data={todos}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <View style={styles.todoItem}>
+            {filter !== "deleted" ? (
+              <Pressable
+                style={styles.todoTextContainer}
+                onPress={() => dispatch(toggleTodo(item.id))}
+              >
+                <View
+                  style={[
+                    styles.todoCheckbox,
+                    item.completed && styles.todoCheckboxCompleted,
+                  ]}
+                />
+                <Text
+                  style={[
+                    styles.todoText,
+                    item.completed && styles.todoTextCompleted,
+                  ]}
+                >
+                  {item.text}
+                </Text>
+              </Pressable>
+            ) : (
+              <Text style={styles.todoText}>{item.text}</Text>
+            )}
+
+            <Pressable
+              style={styles.deleteButton}
+              onPress={() =>
+                filter === "deleted"
+                  ? dispatch(restoreTodo(item.id))
+                  : dispatch(removeTodo(item.id))
+              }
+            >
+              <Text style={styles.deleteButtonText}>
+                {filter === "deleted" ? "↩" : "×"}
+              </Text>
+            </Pressable>
+          </View>
+        )}
+        scrollEnabled={true}
+        contentContainerStyle={styles.listContainer}
+      />
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -112,80 +236,29 @@ const styles = StyleSheet.create({
     color: "#dc2626",
     fontWeight: "bold",
   },
+  filterContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    paddingVertical: 10,
+    backgroundColor: "#ffffff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e5e7eb",
+  },
+  filterButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  filterButtonActive: {
+    backgroundColor: "#3b82f6",
+  },
+  filterText: {
+    fontSize: 14,
+    color: "#6b7280",
+    fontWeight: "500",
+  },
+  filterTextActive: {
+    color: "#ffffff",
+    fontWeight: "700",
+  },
 });
-
-export default function TodoScreen() {
-  const dispatch = useAppDispatch();
-  const allTodos = useAppSelector((state) => state.todos.todos);
-  const todos = allTodos.filter((todo) => !todo.completed);
-
-  const [text, setText] = useState("");
-
-  return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Text style={styles.headerTitle}>My Todos</Text>
-        <Text style={styles.headerSubtitle}>{todos.length} tasks</Text>
-      </View>
-
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Write a new todo..."
-          placeholderTextColor="#999"
-          value={text}
-          onChangeText={setText}
-          style={styles.input}
-        />
-
-        <Pressable
-          style={styles.addButton}
-          onPress={() => {
-            if (text.trim()) {
-              dispatch(addTodo(text));
-              setText("");
-            }
-          }}
-        >
-          <Text style={styles.addButtonText}>Add</Text>
-        </Pressable>
-      </View>
-
-      <FlatList
-        data={todos}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <View style={styles.todoItem}>
-            <Pressable
-              style={styles.todoTextContainer}
-              onPress={() => dispatch(toggleTodo(item.id))}
-            >
-              <View
-                style={[
-                  styles.todoCheckbox,
-                  item.completed && styles.todoCheckboxCompleted,
-                ]}
-              />
-              <Text
-                style={[
-                  styles.todoText,
-                  item.completed && styles.todoTextCompleted,
-                ]}
-              >
-                {item.text}
-              </Text>
-            </Pressable>
-
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => dispatch(removeTodo(item.id))}
-            >
-              <Text style={styles.deleteButtonText}>×</Text>
-            </Pressable>
-          </View>
-        )}
-        scrollEnabled={true}
-        contentContainerStyle={styles.listContainer}
-      />
-    </View>
-  );
-}

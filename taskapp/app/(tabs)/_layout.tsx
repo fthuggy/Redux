@@ -13,6 +13,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarShowLabel: false,
         headerShown: false,
         tabBarButton: HapticTab,
       }}
@@ -21,7 +22,7 @@ export default function TabLayout() {
         name="index"
         options={{
           tabBarLabel: "Todos",
-          headerTitle: "",
+          headerTitle: "Todos",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={28}
@@ -36,7 +37,7 @@ export default function TabLayout() {
         name="completed"
         options={{
           tabBarLabel: "Completed",
-          headerTitle: "",
+          headerTitle: "Completed",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={28}
