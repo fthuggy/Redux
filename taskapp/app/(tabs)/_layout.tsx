@@ -13,16 +13,14 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
-        tabBarShowLabel: true,
-        headerShown: true, // visa header
+        tabBarShowLabel: false,
+        headerShown: false,
         tabBarButton: HapticTab,
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          headerTitle: "My Todos", // <--- snygg title längst upp
-          tabBarLabel: "Todos",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
               size={30}
@@ -36,7 +34,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="deletedScreen"
         options={{
-          headerTitle: "Settings", // <--- snygg title längst upp
+          headerTitle: "Settings",
           tabBarLabel: "Settings",
           tabBarIcon: ({ color, focused }) => (
             <Ionicons

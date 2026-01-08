@@ -19,14 +19,11 @@ import { useAppDispatch, useAppSelector } from "../store/hooks";
 export default function TodoScreen() {
   const dispatch = useAppDispatch();
 
-  // 🟢 Lokal state för filter
   const [filter, setFilter] = useState<"all" | "completed" | "deleted">("all");
   const [text, setText] = useState("");
 
-  // 🟢 Hämtar filtrerade todos via selector
   const todos = useAppSelector((state) => selectTodosByFilter(state, filter));
 
-  // Räkna aktiva todos (för header)
   const activeCount = useAppSelector(
     (state) =>
       state.todos.todos.filter((t) => !t.completed && !t.deleted).length
@@ -147,6 +144,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     borderBottomWidth: 1,
     borderBottomColor: "#e5e7eb",
+    marginTop: 40,
   },
   headerTitle: {
     fontSize: 30,
